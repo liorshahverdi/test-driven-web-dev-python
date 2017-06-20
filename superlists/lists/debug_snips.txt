@@ -1,0 +1,3 @@
+u'<html>\n<head>\n\t<title>To-Do lists</title>\n</head>\n<body>\n\t<h1>Your To-Do list</h1>\n\t<form method="POST">\n\t\t<input name="item_text" id="id_new_item" placeholder="Enter a to-do item"/>\n\t\t<input type=\'hidden\' name=\'csrfmiddlewaretoken\' value=\'PaDR76BlUTMevzg6Q57W5qzN5ZNVzv32iDuhvn5W2WpD2J8G0vw3Ww0PnKYy5LAF\' />\n\t</form>\n\t<table id="id_list_table">\n\t\t<tr><td></td></tr>\n\t</table>\n</body>\n</html>'
+
+u'<html>\n<head>\n\t<title>To-Do lists</title>\n</head>\n<body>\n\t<h1>Your To-Do list</h1>\n\t<form method="POST">\n\t\t<input name="item_text" id="id_new_item" placeholder="Enter a to-do item"/>\n\t\t\n\t</form>\n\t<table id="id_list_table">\n\t\t<tr><td></td></tr>\n\t</table>\n</body>\n</html>'
