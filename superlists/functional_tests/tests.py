@@ -1,8 +1,12 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
+from contextlib import contextmanager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.expected_conditions import staleness_of
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -16,10 +20,16 @@ class NewVisitorTest(unittest.TestCase):
         rows = table.find_elements_by_tag_name('tr')
         self.assertIn(row_text, [row.text for row in rows])
 
+    @contextmanager
+    def wait_for_page_load(self, timeout=30):
+        old_page = self.browser.find_element_by_tag_name("html")
+        yield WebDriverWait(self.browser, timeout).until(staleness_of(old_page))
+
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Edith has heard about a cool new online to-do app. She goes
         # to check out its homepage
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
+        #self.browser.get('http://localhost:8000')
 
         # She notices the page title and header mention to-do lists
         self.assertIn('To-Do', self.browser.title)
@@ -33,26 +43,22 @@ class NewVisitorTest(unittest.TestCase):
         # She types "Buy peacock feathers" into a text box (Edith's hobby
         # is tying fly-fishing lures)
         inputbox.send_keys('Buy peacock feathers')
-        self.browser.implicitly_wait(10)
-
         # When she hits enter, the page updates, and now the page lists
         # "1: Buy peacock feathers" as an item in a to-do list
         inputbox.send_keys(Keys.ENTER)
 
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
-        self.assertIn('2: Use peacock feathers to make a fly', [row.text for row in rows])
-
+        with self.wait_for_page_load(timeout=10):
+            self.check_for_row_list_in_table("1: Buy peacock feathers")
+        
         # There is still a text box inviting her to add another item. She
         # enters "Use peacock feathers to make a fly" (Edith is very methodical)
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Use peacock feathers to make a fly')
         inputbox.send_keys(Keys.ENTER)
 
-        # The page updates again, and now shows both items on her list
-        self.check_for_row_list_in_table('1: Buy peacock feathers')
-        self.check_for_row_list_in_table('2: Use peacock feathers to make a fly')
+        with self.wait_for_page_load(timeout=10):
+            self.check_for_row_list_in_table('1: Buy peacock feathers')
+            self.check_for_row_list_in_table('2: Use peacock feathers to make a fly')
 
         # Edith wonders whether the site will remember her list. Then she sees
         # that the site has generated a unique URL for her -- there is some
@@ -62,6 +68,3 @@ class NewVisitorTest(unittest.TestCase):
         # She visits that URL - her to-do list is still there.
 
         # Satisfied, she goes back to sleep
-
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
