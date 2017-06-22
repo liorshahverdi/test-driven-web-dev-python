@@ -21,7 +21,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertIn(row_text, [row.text for row in rows])
 
     @contextmanager
-    def wait_for_page_load(self, timeout=30):
+    def wait_for_page_load(self, timeout=5):
         old_page = self.browser.find_element_by_tag_name("html")
         yield WebDriverWait(self.browser, timeout).until(staleness_of(old_page))
 
@@ -48,8 +48,8 @@ class NewVisitorTest(LiveServerTestCase):
         # and now the page lists "1: Buy peacock feathers" as an item in a 
         # to-do list table
         inputbox.send_keys(Keys.ENTER)
-        self.browser.implicitly_wait(2)
-        edith_list_url = self.browser.current_url
+        with self.wait_for_page_load():
+            edith_list_url = self.browser.current_url
         self.assertRegex(edith_list_url, '/lists/.+')
         self.check_for_row_list_in_table('1: Buy peacock feathers')
         
@@ -60,7 +60,8 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
 
         # The page updates again, and now shows both items on her list
-        self.check_for_row_list_in_table('2: Use peacock feathers to make a fly')
+        with self.wait_for_page_load():
+            self.check_for_row_list_in_table('2: Use peacock feathers to make a fly')
         self.check_for_row_list_in_table('1: Buy peacock feathers')
 
         # Now a new user, Francis, comes along to the site.
@@ -83,7 +84,8 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
 
         # Francis gets his own unique URL
-        francis_list_url = self.browser.current_url
+        with self.wait_for_page_load():
+            francis_list_url = self.browser.current_url
         self.assertRegex(francis_list_url, '/lists/.+')
         self.assertNotEqual(francis_list_url, edith_list_url)
 
