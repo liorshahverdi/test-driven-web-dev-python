@@ -1,3 +1,9 @@
 - Display multiple items in the table
 
 - Support more than 1 list!
+
+
+
+Green? Refactor
+
+Time for a little tidying up.

@@ -93,7 +93,5 @@ class ListViewTest(TestCase):
 
 		response = self.client.get('/lists/the-only-list-in-the-world/')
 
-		self.assertContains(response, 'itemey1')
-		self.assertContains(response, 'itemey2')
-
-
+		self.assertContains(response, 'itemey 1')
+		self.assertContains(response, 'itemey 2')

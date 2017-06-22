@@ -48,12 +48,10 @@ class NewVisitorTest(LiveServerTestCase):
         # and now the page lists "1: Buy peacock feathers" as an item in a 
         # to-do list table
         inputbox.send_keys(Keys.ENTER)
+        self.browser.implicitly_wait(2)
         edith_list_url = self.browser.current_url
         self.assertRegex(edith_list_url, '/lists/.+')
         self.check_for_row_list_in_table('1: Buy peacock feathers')
-
-        with self.wait_for_page_load(timeout=10):
-            self.check_for_row_list_in_table("1: Buy peacock feathers")
         
         # There is still a text box inviting her to add another item. She
         # enters "Use peacock feathers to make a fly" (Edith is very methodical)
@@ -62,9 +60,8 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
 
         # The page updates again, and now shows both items on her list
-        with self.wait_for_page_load(timeout=10):
-            self.check_for_row_list_in_table('2: Use peacock feathers to make a fly')
-            self.check_for_row_list_in_table('1: Buy peacock feathers')
+        self.check_for_row_list_in_table('2: Use peacock feathers to make a fly')
+        self.check_for_row_list_in_table('1: Buy peacock feathers')
 
         # Now a new user, Francis, comes along to the site.
 
