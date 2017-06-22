@@ -50,6 +50,7 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
         with self.wait_for_page_load():
             edith_list_url = self.browser.current_url
+        #print ('edith_list_url ==> %s' % edith_list_url)
         self.assertRegex(edith_list_url, '/lists/.+')
         self.check_for_row_list_in_table('1: Buy peacock feathers')
         
