@@ -1,7 +1,8 @@
 from django.db import models
+import uuid
 
 class List(models.Model):
-	pass
+	uuid = models.UUIDField(unique=True, default='')
 
 class Item(models.Model):
 	text = models.TextField(default='')

@@ -48,9 +48,10 @@ class NewVisitorTest(LiveServerTestCase):
         # and now the page lists "1: Buy peacock feathers" as an item in a 
         # to-do list table
         inputbox.send_keys(Keys.ENTER)
+        #self.browser.implicitly_wait(3)
         with self.wait_for_page_load():
             edith_list_url = self.browser.current_url
-        #print ('edith_list_url ==> %s' % edith_list_url)
+        print ('edith_list_url ==> %s' % edith_list_url)
         self.assertRegex(edith_list_url, '/lists/.+')
         self.check_for_row_list_in_table('1: Buy peacock feathers')
         
